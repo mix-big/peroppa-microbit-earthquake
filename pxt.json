@@ -10,7 +10,8 @@
         "main.blocks",
         "main.ts",
         "README.md",
-        "main.py"
+        "main.py",
+        "pga.ts"
     ],
     "testFiles": [
         "test.ts"
