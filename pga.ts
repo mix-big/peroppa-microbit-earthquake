@@ -1,22 +1,32 @@
 //% weight=100 color=#ff5733 icon="\uf0c3"
 //% block="PGA Sensor"
 namespace PGA {
+    let prevX = 0;
+    let prevY = 0;
+    let prevZ = 0;
 
     /**
      * micro:bitの加速度計の値をPGA（gal）に変換して取得
      */
     //% blockId=pga_get block="PGA (gal)"
     export function getPGA(): number {
-        let x = input.acceleration(Dimension.X); // mg単位
+        let x = input.acceleration(Dimension.X);
         let y = input.acceleration(Dimension.Y);
         let z = input.acceleration(Dimension.Z);
 
-        // 合成加速度を計算（ピタゴラスの定理）
-        let acc = Math.sqrt(x * x + y * y + z * z);
-        
-        // mg → gal 変換
-        let pga = acc * 0.0980665;
-        
+        // 直前の値との差分を求める
+        let deltaX = x - prevX;
+        let deltaY = y - prevY;
+        let deltaZ = z - prevZ;
+
+        // 差分を保存（次回の比較用）
+        prevX = x;
+        prevY = y;
+        prevZ = z;
+
+        // ベクトルの変化量 (PGA の計算)
+        let pga = Math.sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ) * 0.0980665;
+
         return pga;
     }
 

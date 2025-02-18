@@ -1,3 +1,3 @@
-basic.showString("Hello");
-basic.showString("World");
-
+basic.forever(function () {
+    radio.sendString(PGA.toJMASeismicIntensity(PGA.getPGA()))
+})
