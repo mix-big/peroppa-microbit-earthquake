@@ -16,17 +16,35 @@ namespace PGA {
         let y = input.acceleration(Dimension.Y);
         let z = input.acceleration(Dimension.Z);
 
-        // 合成加速度を計算（ピタゴラスの定理）
-        let acc = Math.sqrt(x * x + y * y + z * z);
-
-        // mg → gal 変換
-        let pga = acc * 0.0980665;
-
-        return pga;
+        let acc = Math.sqrt(x * x + y * y + z * z); // 合成加速度
+        return acc * 0.0980665; // mg → gal 変換
     }
 
     /**
-     * PGA (gal) から JMA 震度階級に変換 (5弱/5強, 6弱/6強 を "5-", "5+" のように表記)
+     * 揺れの周波数を検出（試作版）
+     */
+    //% blockId=pga_detect_frequency block="揺れの周波数 (Hz)"
+    export function detectShakeFrequency(): number {
+        let currentTime = control.millis();
+        let timeDiff = (currentTime - prevTime) / 1000;
+        prevTime = currentTime;
+
+        if (timeDiff == 0) return 0; // 0除算防止
+
+        let x = input.acceleration(Dimension.X);
+        let y = input.acceleration(Dimension.Y);
+        let z = input.acceleration(Dimension.Z);
+
+        let totalChange = Math.abs(x - prevX) + Math.abs(y - prevY) + Math.abs(z - prevZ);
+        prevX = x;
+        prevY = y;
+        prevZ = z;
+
+        return totalChange / timeDiff / 1000; // 変化量を時間で割って周波数推定
+    }
+
+    /**
+     * PGA (gal) から JMA 震度階級に変換
      */
     //% blockId=pga_to_jma block="PGA %pga (gal) をJMA震度に変換"
     export function toJMASeismicIntensity(pga: number): string {
@@ -63,56 +81,37 @@ namespace PGA {
     }
 
     /**
-     * JMA震度が指定値以上かを判定
+     * 指定した JMA 震度以上かを判定
      */
-    //% blockId=pga_is_above_jma block="JMA震度 %intensity 以上か判定"
-    export function isAboveJMAIntensity(intensity: string): boolean {
-        let pga = getPGA(); // 現在のPGA取得
-        let currentIntensity = toJMASeismicIntensity(pga); // JMA震度に変換
-
-        return currentIntensity >= intensity;
+    //% blockId=pga_is_jma_above block="PGA %pga (gal) が震度 %shindo 以上"
+    export function isJMASeismicAbove(pga: number, shindo: string): boolean {
+        let intensity = toJMASeismicIntensity(pga);
+        let levels = ["0", "1", "2", "3", "4", "5-", "5+", "6-", "6+", "7"];
+        return levels.indexOf(intensity) >= levels.indexOf(shindo);
     }
 
     /**
-     * メルカリ震度が指定値以上かを判定
+     * 指定した メルカリ震度以上かを判定
      */
-    //% blockId=pga_is_above_mercalli block="メルカリ震度 %intensity 以上か判定"
-    export function isAboveMercalliIntensity(intensity: number): boolean {
-        let pga = getPGA(); // 現在のPGA取得
-        let currentIntensity = toMercalliIntensity(pga); // メルカリ震度に変換
-
-        return currentIntensity >= intensity;
+    //% blockId=pga_is_mercalli_above block="PGA %pga (gal) がメルカリ震度 %shindo 以上"
+    //% shindo.min=1 shindo.max=12 shindo.defl=6
+    export function isMercalliIntensityAbove(pga: number, shindo: number): boolean {
+        let intensity = toMercalliIntensity(pga);
+        return intensity >= shindo;
     }
 
     /**
-     * 揺れの周波数を検出（試作版）
+     * PGA (gal) から 長周期地震動階級を求める
      */
-    //% blockId=pga_detect_frequency block="揺れの周波数 (Hz)"
-    export function detectShakeFrequency(): number {
-        let currentTime = control.millis(); // 現在の時間を取得
-        let timeDiff = (currentTime - prevTime) / 1000; // 前回との時間差 (秒)
-        prevTime = currentTime; // 時間を更新
+    //% blockId=pga_to_long_period block="PGA %pga (gal) で長周期地震動階級を求める"
+    export function toLongPeriodSeismicIntensity(pga: number): number {
+        let frequency = detectShakeFrequency();
+        if (frequency < 0.05 || frequency > 0.5) return 0; // 長周期地震動の範囲外
 
-        if (timeDiff == 0) return 0; // 0除算防止
-
-        let x = input.acceleration(Dimension.X);
-        let y = input.acceleration(Dimension.Y);
-        let z = input.acceleration(Dimension.Z);
-
-        // 変化量の大きさを算出
-        let deltaX = Math.abs(x - prevX);
-        let deltaY = Math.abs(y - prevY);
-        let deltaZ = Math.abs(z - prevZ);
-
-        let totalChange = deltaX + deltaY + deltaZ; // 3軸の変化量合計
-
-        prevX = x;
-        prevY = y;
-        prevZ = z;
-
-        // 周波数を計算（変化が大きいと高周波とする単純モデル）
-        let frequency = totalChange / timeDiff / 1000; // (仮) 変化量を時間で割る
-
-        return frequency;
+        if (pga >= 400) return 4;
+        if (pga >= 250) return 3;
+        if (pga >= 100) return 2;
+        if (pga >= 40) return 1;
+        return 0;
     }
 }
