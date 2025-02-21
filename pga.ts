@@ -1,4 +1,4 @@
-//% weight=100 color=#ff5733 icon="\uf0c3"
+//% weight=100 color=#ffaa33 icon="icon.svg"
 //% block="PGA Sensor"
 namespace PGA {
 
@@ -16,8 +16,13 @@ namespace PGA {
         let y = input.acceleration(Dimension.Y);
         let z = input.acceleration(Dimension.Z);
 
-        let acc = Math.sqrt(x * x + y * y + z * z); // 合成加速度
-        return acc * 0.0980665; // mg → gal 変換
+        // 合成加速度を計算（ピタゴラスの定理）
+        let acc = Math.sqrt(x * x + y * y + z * z);
+
+        // mg → gal 変換
+        let pga = acc * 0.0980665;
+
+        return pga;
     }
 
     /**
@@ -44,7 +49,7 @@ namespace PGA {
     }
 
     /**
-     * PGA (gal) から JMA 震度階級に変換
+     * PGA (gal) から JMA 震度階級に変換 (5弱/5強, 6弱/6強 を "5-", "5+" のように表記)
      */
     //% blockId=pga_to_jma block="PGA %pga (gal) をJMA震度に変換"
     export function toJMASeismicIntensity(pga: number): string {
@@ -81,37 +86,41 @@ namespace PGA {
     }
 
     /**
-     * 指定した JMA 震度以上かを判定
+     * PGA (gal) から 長周期地震動階級を求める  
+     * （長周期地震動とは、0.05Hz～0.5Hzの周波数帯域とする）
      */
-    //% blockId=pga_is_jma_above block="PGA %pga (gal) が震度 %shindo 以上"
-    export function isJMASeismicAbove(pga: number, shindo: string): boolean {
-        let intensity = toJMASeismicIntensity(pga);
-        let levels = ["0", "1", "2", "3", "4", "5-", "5+", "6-", "6+", "7"];
-        return levels.indexOf(intensity) >= levels.indexOf(shindo);
-    }
-
-    /**
-     * 指定した メルカリ震度以上かを判定
-     */
-    //% blockId=pga_is_mercalli_above block="PGA %pga (gal) がメルカリ震度 %shindo 以上"
-    //% shindo.min=1 shindo.max=12 shindo.defl=6
-    export function isMercalliIntensityAbove(pga: number, shindo: number): boolean {
-        let intensity = toMercalliIntensity(pga);
-        return intensity >= shindo;
-    }
-
-    /**
-     * PGA (gal) から 長周期地震動階級を求める
-     */
-    //% blockId=pga_to_long_period block="PGA %pga (gal) で長周期地震動階級を求める"
+    //% blockId=pga_to_longPeriodSeismicIntensity block="PGA %pga (gal) を長周期地震動階級に変換"
     export function toLongPeriodSeismicIntensity(pga: number): number {
+        // 周波数検出
         let frequency = detectShakeFrequency();
-        if (frequency < 0.05 || frequency > 0.5) return 0; // 長周期地震動の範囲外
+        if (frequency < 0.05 || frequency > 0.5) return 0; // 長周期帯域外なら0
 
+        // 長周期地震動階級の基準（例）
         if (pga >= 400) return 4;
         if (pga >= 250) return 3;
-        if (pga >= 100) return 2;
-        if (pga >= 40) return 1;
+        if (pga >= 80) return 2;
+        if (pga >= 15) return 1;
         return 0;
+    }
+
+    /**
+     * PGAが指定した JMA震度以上かどうかを判定する
+     */
+    //% blockId=pga_isJMASeismicAbove block="PGA %pga (gal) が震度 %shindo 以上"
+    export function isJMASeismicAbove(pga: number, shindo: string): boolean {
+        let current = toJMASeismicIntensity(pga);
+        // 震度のレベル順
+        let levels = ["0", "1", "2", "3", "4", "5-", "5+", "6-", "6+", "7"];
+        return levels.indexOf(current) >= levels.indexOf(shindo);
+    }
+
+    /**
+     * PGAが指定した メルカリ震度以上かどうかを判定する
+     */
+    //% blockId=pga_isMercalliSeismicAbove block="PGA %pga (gal) がメルカリ震度 %shindo 以上"
+    //% shindo.min=1 shindo.max=12 shindo.defl=6
+    export function isMercalliSeismicAbove(pga: number, shindo: number): boolean {
+        let current = toMercalliIntensity(pga);
+        return current >= shindo;
     }
 }
