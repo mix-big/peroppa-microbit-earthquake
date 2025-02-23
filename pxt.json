@@ -1,6 +1,27 @@
 {
-  "name": "PGA Sensor",
-  "description": "地震の加速度・震度を計測する拡張機能",
-  "icon": "icon.svg",
-  "color": "#ff5733"
+    "name": "peqmbitV6",
+    "description": "",
+    "dependencies": {
+        "core": "*",
+        "radio": "*",
+        "microphone": "*"
+    },
+    "files": [
+        "main.blocks",
+        "main.ts",
+        "README.md",
+        "main.py",
+        "pga.ts"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "targetVersions": {
+        "target": "7.0.57",
+        "targetId": "microbit"
+    },
+    "supportedTargets": [
+        "microbit"
+    ],
+    "preferredEditor": "tsprj"
 }
