@@ -1,37 +1,37 @@
-<xml xmlns="https://developers.google.com/blockly/xml"><variables></variables><block type="function_definition" id=":RjT]8%#-~EM*xb`p[5!" x="427" y="-262"><mutation name="地震検出!" functionid="CO.P6$FeP!GTSaYGPat_"></mutation><field name="function_name">地震検出!</field><statement name="STACK"><block type="device_show_leds" id="c)fU:`MPu+*4Vw|RshWE"><field name="LEDS">`
+<xml xmlns="https://developers.google.com/blockly/xml"><variables></variables><block type="device_gesture_event" id="dUVdd61/M1!:XkXNn]O." x="0" y="0"><field name="NAME">Gesture.Shake</field><statement name="HANDLER"><block type="function_call" id="(FH:kK_I+Fj|ZdcgJ5uD"><mutation name="地震検出" functionid=")OXwH^oa)GY(Z9eZ,aSa"></mutation><next><block type="device_while" id="|p4MRJsX+F5r$c/yO,7-"><value name="COND"><shadow type="logic_boolean" id="!Psy/]t!QT)5uR5gzxwe"><field name="BOOL">TRUE</field></shadow><block type="logic_negate" id="od$ioI/4,G,H8C{BJ:(r"><value name="BOOL"><shadow type="logic_boolean" id="seRV9D{|eS4FBTH_g*I)"><field name="BOOL">TRUE</field></shadow><block type="logic_compare" id="^|Lu,tQ6MDi)2PV)%j%^"><field name="OP">LT</field><value name="A"><shadow type="math_number" id="q1embL~Oe+0k^#BHc%Tj"><field name="NUM">0</field></shadow><block type="pga_get" id="Dw,o5*6.iL+j?3;1*cEF"></block></value><value name="B"><shadow type="math_number" id=".`(b,-r])4taQ(T(u|w;"><field name="NUM">2.5</field></shadow></value></block></value></block></value><statement name="DO"><block type="radio_datagram_send_string" id="c26XUbA-cUVc/pr?;6O^"><value name="msg"><shadow type="text" id="K:duIgNFl(Jl~tFmJ~8Y"><field name="TEXT"></field></shadow></value></block></statement></block></next></block></statement></block><block type="function_definition" id="!4[b+bWL6uMtrRK3)+#3" x="599" y="0"><mutation name="地震検出" functionid=")OXwH^oa)GY(Z9eZ,aSa"></mutation><field name="function_name">地震検出</field><statement name="STACK"><block type="device_show_leds" id="9=LSQ4Z#@MH+[},PXCHS"><field name="LEDS">`
         . . . . . 
         . # . . . 
         # . # . # 
         . . . # . 
         . . . . .
-        `</field><next><block type="device_show_leds" id="FSp_A4{n3ggATD?`pseo"><field name="LEDS">`
+        `</field><next><block type="device_show_leds" id="s+M@nFDhK^VsHgr%Y#kO"><field name="LEDS">`
         . . . . . 
         . # . # . 
         # . . . # 
         . . # . . 
         . . . . .
-        `</field><next><block type="device_show_leds" id="sg@%{H5W*bs72UW*gyA_"><field name="LEDS">`
+        `</field><next><block type="device_show_leds" id="j/f+:u)N5)JpH)`WHOWY"><field name="LEDS">`
         . . . . . 
         . . . . . 
         # . # . # 
         . # . # . 
         . . . . .
-        `</field><next><block type="device_show_leds" id="U1:g@A:}L(P@3P,||hr8"><field name="LEDS">`
+        `</field><next><block type="device_show_leds" id="Ix5~yK~c9v,tSC^7!@NA"><field name="LEDS">`
         . . . . . 
         . . . # . 
         # . # . # 
         . # . . . 
         . . . . .
-        `</field><next><block type="device_show_leds" id="MK%:T4r5u^.|FD29DDy-"><field name="LEDS">`
+        `</field><next><block type="device_show_leds" id="5}M[H3Ub$Xx_FfI,[izH"><field name="LEDS">`
         . . . . . 
         . . # . . 
         # . . . # 
         . # . # . 
         . . . . .
-        `</field><next><block type="device_show_leds" id="3Nh?ePr2)3~PqTUb60BQ"><field name="LEDS">`
+        `</field><next><block type="device_show_leds" id="%}yRRet;#vo5jVDi1FA4"><field name="LEDS">`
         . . . . . 
         . # . # . 
         # . # . # 
         . . . . . 
         . . . . .
-        `</field></block></next></block></next></block></next></block></next></block></next></block></statement></block><block type="device_gesture_event" id="XtC?k4CVXXIP#3?$puqF" x="0" y="0"><field name="NAME">Gesture.Shake</field><statement name="HANDLER"><block type="function_call" id="FLi).`]HLI4mu^QLN}f,"><mutation name="地震検出!" functionid="CO.P6$FeP!GTSaYGPat_"></mutation><next><block type="device_while" id=")wj;{#b6z|,J(/d2Y5N["><value name="COND"><shadow type="logic_boolean" id="F]L:-3iE6!11I8bBNR36" disabled-reasons="MANUALLY_DISABLED"><field name="BOOL">FALSE</field></shadow><block type="logic_negate" id="jeRB6ZT$@`n~SBubfm|X"><value name="BOOL"><block type="logic_compare" id="3LSU.V7C0KLl!O_Vs9L|"><field name="OP">LT</field><value name="A"><shadow type="math_number" id="Oy?7_:ylYV?}sv?2VM]Z" disabled-reasons="MANUALLY_DISABLED"><field name="NUM">0</field></shadow><block type="pga_get" id="0iw}`QTRpPqSk$TZaG0p"></block></value><value name="B"><shadow type="math_number" id="klo2y6Z3(Yl%jHToc^^L"><field name="NUM">2.5</field></shadow></value></block></value></block></value><statement name="DO"><block type="radio_datagram_send_string" id="z1;?.0T|u7#,a_l$*-Z7"></block></statement></block></next></block></statement></block></xml>
+        `</field></block></next></block></next></block></next></block></next></block></next></block></statement></block></xml>
