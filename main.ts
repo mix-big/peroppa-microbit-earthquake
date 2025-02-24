@@ -1,4 +1,4 @@
-function 地震検出() {
+function 地震検出 () {
     basic.showLeds(`
         . . . . .
         . # . . .
@@ -42,8 +42,7 @@ function 地震検出() {
         . . . . .
         `)
 }
-
-input.onGesture(Gesture.Shake, function on_gesture_shake() {
+input.onGesture(Gesture.Shake, function () {
     地震検出()
     while (!(PGA.getPGA() < 2.5)) {
         radio.sendString("")

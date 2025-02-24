@@ -9,7 +9,7 @@ namespace PGA {
     let prevPGA = 0;
 
     /**
-     * PGA (gal) を変位から計算
+     * PGA (gal) を取得
      */
     //% blockId=pga_get block="PGA (gal)"
     export function getPGA(): number {
@@ -39,6 +39,15 @@ namespace PGA {
     }
 
     /**
+     * 周期から周波数を求める
+     */
+    //% blockId=period_to_frequency block="周期 %period 秒 の周波数"
+    export function getFrequency(period: number): number {
+        if (period <= 0) return 0;
+        return 1 / period;
+    }
+
+    /**
      * 長周期地震動階級を計算
      */
     //% blockId=long_period_intensity block="長周期地震動階級 (周期: %period 秒, 速度: %velocity cm/s)"
@@ -52,7 +61,7 @@ namespace PGA {
     }
 
     /**
-     * 長周期震度階級が 指定階級以上かを判定
+     * 長周期震度階級が 指定震度以上かを判定
      */
     //% blockId=is_long_period_above block="長周期震度階級 %period 秒, 速度 %velocity cm/s が %shindo 以上"
     export function isLongPeriodAbove(period: number, velocity: number, shindo: number): boolean {
@@ -62,6 +71,7 @@ namespace PGA {
     /**
      * PGA (gal) から JMA 震度階級に変換
      */
+    //% blockId=pga_to_jma block="PGA %pga (gal) をJMA震度に変換"
     export function toJMASeismicIntensity(pga: number): string {
         if (pga >= 1400) return "7";
         if (pga >= 900) return "6+";
@@ -78,44 +88,45 @@ namespace PGA {
     /**
      * PGA (gal) から ヨーロッパ震度階級に変換
      */
+    //% blockId=pga_to_european block="PGA %pga (gal) をヨーロッパ震度に変換"
     export function toEuropeanIntensity(pga: number): number {
-        if (pga >= 2000) return 12;
-        if (pga >= 1400) return 11;
-        if (pga >= 900) return 10;
-        if (pga >= 600) return 9;
-        if (pga >= 400) return 8;
-        if (pga >= 250) return 7;
-        if (pga >= 80) return 6;
-        if (pga >= 25) return 5;
-        if (pga >= 8) return 4;
-        if (pga >= 2.5) return 3;
-        if (pga >= 0.5) return 2;
-        if (pga >= 0.2) return 1;
-        return 0;
+        if (pga >= 2500) return 12;
+        if (pga >= 2000) return 11;
+        if (pga >= 1000) return 10;
+        if (pga >= 500) return 9;
+        if (pga >= 250) return 8;
+        if (pga >= 120) return 7;
+        if (pga >= 60) return 6;
+        if (pga >= 30) return 5;
+        if (pga >= 15) return 4;
+        if (pga >= 5) return 3;
+        if (pga >= 1.5) return 2;
+        return 1;
     }
 
     /**
      * PGA (gal) から 中国震度階級に変換
      */
+    //% blockId=pga_to_chinese block="PGA %pga (gal) を中国震度に変換"
     export function toChineseIntensity(pga: number): number {
-        if (pga >= 1600) return 12;
-        if (pga >= 1200) return 11;
-        if (pga >= 900) return 10;
-        if (pga >= 600) return 9;
-        if (pga >= 400) return 8;
-        if (pga >= 250) return 7;
-        if (pga >= 80) return 6;
-        if (pga >= 25) return 5;
+        if (pga >= 600) return 12;
+        if (pga >= 400) return 11;
+        if (pga >= 250) return 10;
+        if (pga >= 150) return 9;
+        if (pga >= 100) return 8;
+        if (pga >= 60) return 7;
+        if (pga >= 30) return 6;
+        if (pga >= 15) return 5;
         if (pga >= 8) return 4;
-        if (pga >= 2.5) return 3;
-        if (pga >= 0.5) return 2;
-        if (pga >= 0.2) return 1;
-        return 0;
+        if (pga >= 3) return 3;
+        if (pga >= 1) return 2;
+        return 1;
     }
 
     /**
      * PGA (gal) から 改正メルカリ震度階級に変換
      */
+    //% blockId=pga_to_mercalli block="PGA %pga (gal) を改正メルカリ震度に変換"
     export function toRevisedMercalliIntensity(pga: number): number {
         if (pga >= 2000) return 12;
         if (pga >= 1400) return 11;
@@ -133,32 +144,12 @@ namespace PGA {
     }
 
     /**
-     * JMA震度階級が 指定震度以上かを判定
+     * 指定した JMA 震度以上かを判定
      */
+    //% blockId=is_jma_above block="PGA %pga (gal) が震度 %shindo 以上"
     export function isJMASeismicAbove(pga: number, shindo: string): boolean {
         let intensity = toJMASeismicIntensity(pga);
         let levels = ["0", "1", "2", "3", "4", "5-", "5+", "6-", "6+", "7"];
         return levels.indexOf(intensity) >= levels.indexOf(shindo);
-    }
-
-    /**
-     * ヨーロッパ震度階級が 指定震度以上かを判定
-     */
-    export function isEuropeanIntensityAbove(pga: number, shindo: number): boolean {
-        return toEuropeanIntensity(pga) >= shindo;
-    }
-
-    /**
-     * 中国震度階級が 指定震度以上かを判定
-     */
-    export function isChineseIntensityAbove(pga: number, shindo: number): boolean {
-        return toChineseIntensity(pga) >= shindo;
-    }
-
-    /**
-     * 改正メルカリ震度階級が 指定震度以上かを判定
-     */
-    export function isRevisedMercalliIntensityAbove(pga: number, shindo: number): boolean {
-        return toRevisedMercalliIntensity(pga) >= shindo;
     }
 }
